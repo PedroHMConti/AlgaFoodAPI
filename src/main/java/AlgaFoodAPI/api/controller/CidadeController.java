@@ -37,14 +37,14 @@ public class CidadeController {
 
     @GetMapping
     public List<Cidade> listar(){
-        return repository.listar();
+        return repository.findAll();
     }
 
     @GetMapping("/{cidadeId}")
-    public ResponseEntity<Cidade> buscar(@PathVariable Long cidadeId){
-        Cidade cidade =  repository.buscar(cidadeId);
+    public ResponseEntity<?> buscar(@PathVariable Long cidadeId){
+        Cidade cidade =  repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
         if(cidade == null){
-            throw new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId));
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(cidade);
     }
@@ -63,10 +63,10 @@ public class CidadeController {
     @PutMapping("/{cidadeId}")
     public ResponseEntity<?> atualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
         try{
-            Cidade cidadeAtual = repository.buscar(cidadeId);
+            Cidade cidadeAtual = repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
             if(cidadeAtual != null){
                 BeanUtils.copyProperties(cidade,cidadeAtual,"id");
-                cidadeAtual = repository.adicionar(cidadeAtual);
+                cidadeAtual = repository.save(cidadeAtual);
                 return ResponseEntity.ok(cidadeAtual);
             }
             return ResponseEntity.notFound().build();
@@ -77,8 +77,8 @@ public class CidadeController {
 
     @DeleteMapping("/{cidadeId}")
     public ResponseEntity<?> delete(@PathVariable Long cidadeId){
-        Cidade cidade  = repository.buscar(cidadeId);
         try{
+            Cidade cidade  = repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
             cadastroCidade.delete(cidadeId);
             return ResponseEntity.noContent().build();
         }catch (EntidadeNaoEncontradaException e){
@@ -88,32 +88,32 @@ public class CidadeController {
         }
     }
 
-    @PatchMapping("/{cidadeId}")
-    public ResponseEntity<?> atualizarPartical(@PathVariable Long cidadeId, @RequestBody Map<String, Object> campos){
-        Cidade cidade = repository.buscar(cidadeId);
-        if(cidade == null){
-            return ResponseEntity.notFound().build();
-        }
-
-        merge(campos,cidade);
-
-
-        return atualizar(cidadeId,cidade);
-    }
-
-    public void merge(Map<String,Object> camposOrigem,Cidade cidadeDestino){
-
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Cidade cidadeOrigem = objectMapper.convertValue(camposOrigem,Cidade.class);
-        camposOrigem.forEach((nomePropriedade,valorPropriedade) ->{
-            Field field = ReflectionUtils.findField(Cidade.class,nomePropriedade);
-            field.setAccessible(true);
-
-            Object novoValor = ReflectionUtils.getField(field,cidadeOrigem);
-
-            System.out.println(nomePropriedade + " = "+ valorPropriedade);
-            ReflectionUtils.setField(field,cidadeDestino,novoValor);
-        });
-    }
+//    @PatchMapping("/{cidadeId}")
+//    public ResponseEntity<?> atualizarPartical(@PathVariable Long cidadeId, @RequestBody Map<String, Object> campos){
+//        Cidade cidade = repository.buscar(cidadeId);
+//        if(cidade == null){
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        merge(campos,cidade);
+//
+//
+//        return atualizar(cidadeId,cidade);
+//    }
+//
+//    public void merge(Map<String,Object> camposOrigem,Cidade cidadeDestino){
+//
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Cidade cidadeOrigem = objectMapper.convertValue(camposOrigem,Cidade.class);
+//        camposOrigem.forEach((nomePropriedade,valorPropriedade) ->{
+//            Field field = ReflectionUtils.findField(Cidade.class,nomePropriedade);
+//            field.setAccessible(true);
+//
+//            Object novoValor = ReflectionUtils.getField(field,cidadeOrigem);
+//
+//            System.out.println(nomePropriedade + " = "+ valorPropriedade);
+//            ReflectionUtils.setField(field,cidadeDestino,novoValor);
+//        });
+//    }
 }

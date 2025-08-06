@@ -29,18 +29,13 @@ public class CadastroCidade {
         }
 
         cidade.setEstado(estado);
-        return cidadeRepository.adicionar(cidade);
+        return cidadeRepository.save(cidade);
     }
 
     public void delete(Long cidadeId) {
         try {
-            Cidade cidade = cidadeRepository.buscar(cidadeId);
-            if (cidade == null) {
-                throw new EntidadeNaoEncontradaException(
-                        String.format("Não existe uma cidade com o código %d", cidadeId));
-            }
-
-            cidadeRepository.remover(cidade);
+            Cidade cidade = cidadeRepository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe uma cidade com o código %d", cidadeId)));
+            cidadeRepository.deleteById(cidadeId);
 
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
