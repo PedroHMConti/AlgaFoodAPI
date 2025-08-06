@@ -16,13 +16,8 @@ public class CadastroEstado {
 
     public void delete(Long estadoId) {
         try {
-            Estado estado = estadoRepository.buscar(estadoId);
-            if (estado == null) {
-                throw new EntidadeNaoEncontradaException(
-                        String.format("Não existe um estado com o código %d", estadoId));
-            }
-
-            estadoRepository.remover(estado);
+            Estado estado = estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não exite cadastro para o estado com o código %d",estadoId)));
+            estadoRepository.delete(estado);
 
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
@@ -31,6 +26,6 @@ public class CadastroEstado {
     }
 
     public Estado salvar(Estado estado){
-        return estadoRepository.adicionar(estado);
+        return estadoRepository.save(estado);
     }
 }

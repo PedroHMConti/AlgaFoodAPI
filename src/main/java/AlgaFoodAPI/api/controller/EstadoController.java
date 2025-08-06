@@ -27,18 +27,20 @@ public class EstadoController {
 
     @GetMapping
     public List<Estado> listar(){
-        return estadoRepository.listar();
+        return estadoRepository.findAll();
     }
 
 
     @GetMapping("/{estadoId}")
-    public ResponseEntity<Estado> buscar(@PathVariable Long estadoId){
-        Estado estado = estadoRepository.buscar(estadoId);
-        if(estado != null){
+    public ResponseEntity<?> buscar(@PathVariable Long estadoId){
+        try {
+            Estado estado = estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não exite cadastro para o estado com o código %d",estadoId)));
             return ResponseEntity.ok(estado);
-        }else{
-            return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+
     }
 
     @PostMapping
@@ -50,13 +52,14 @@ public class EstadoController {
 
     @PutMapping("/{estadoId}")
     public ResponseEntity<?> atualizar(@PathVariable Long estadoId,@RequestBody Estado estado){
-        Estado estadoAtual = estadoRepository.buscar(estadoId);
-        if(estadoAtual != null){
+        try{
+            Estado estadoAtual = estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não exite cadastro para o estado com o código %d",estadoId)));
             BeanUtils.copyProperties(estado,estadoAtual,"id");
-            estadoAtual = estadoRepository.adicionar(estado);
+            estadoAtual = cadastroEstado.salvar(estadoAtual);
             return ResponseEntity.ok(estadoAtual);
+        }catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{estadoId}")
