@@ -73,9 +73,9 @@ public class RestauranteController {
 
     @DeleteMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> delete(@PathVariable Long restauranteId){
-        Restaurante restaurante = repo.buscar(restauranteId);
+        Restaurante restaurante = repo.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para o restaurante com o código %d",restauranteId)));
        try{
-           repo.remover(restaurante);
+           cadastroRestaurante.excluir(restauranteId);
            return ResponseEntity.noContent().build();
 
        } catch (EntidadeEmUsoException  e) {
