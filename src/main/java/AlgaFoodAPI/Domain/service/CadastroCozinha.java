@@ -19,11 +19,11 @@ public class CadastroCozinha {
     private CozinhaRepository cozinhaRepository;
 
     public Cozinha salvar(Cozinha cozinha){
-        return cozinhaRepository.salvar(cozinha);
+        return cozinhaRepository.save(cozinha);
     }
     public void remover(Long cozinhaid){
         try {
-            cozinhaRepository.remover(cozinhaid);
+            cozinhaRepository.deleteById(cozinhaid);
         } catch (EmptyResultDataAccessException ex) {
             throw new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",cozinhaid));
 

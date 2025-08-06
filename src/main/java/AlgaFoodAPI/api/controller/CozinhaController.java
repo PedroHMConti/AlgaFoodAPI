@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 //GET /cozinhas HTTP/1.1
 
@@ -32,15 +33,15 @@ public class CozinhaController {
 
     @GetMapping
     public List<Cozinha> listar(){
-        return cozinhaRepository.listar();
+        return cozinhaRepository.findAll();
     }
 
 
     @GetMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> buscar(@PathVariable("cozinhaId") Long id){
-        Cozinha cozinha = cozinhaRepository.buscar(id);
+    public ResponseEntity<?> buscar(@PathVariable("cozinhaId") Long id){
+        Optional<Cozinha> cozinha = cozinhaRepository.findById(id);
 
-        if (cozinha != null) {
+        if (cozinha.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(cozinha);
 
         }else {
@@ -56,11 +57,11 @@ public class CozinhaController {
 
     @PutMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha){
-        Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
-        if(cozinhaAtual != null){
-            BeanUtils.copyProperties(cozinha,cozinhaAtual,"id");
-            cozinhaAtual = cadastroCozinha.salvar(cozinhaAtual);
-            return ResponseEntity.ok(cozinhaAtual);
+        Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(cozinhaId);
+        if(cozinhaAtual.isPresent()){
+            BeanUtils.copyProperties(cozinha,cozinhaAtual.get(),"id");
+            Cozinha cozinhasalva = cadastroCozinha.salvar(cozinhaAtual.get());
+            return ResponseEntity.ok(cozinhasalva);
         }else{
             return ResponseEntity.notFound().build();
         }
@@ -68,7 +69,7 @@ public class CozinhaController {
 
     @DeleteMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId){
-        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+        Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",cozinhaId)));
         try{
             cadastroCozinha.remover(cozinhaId);
             return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
