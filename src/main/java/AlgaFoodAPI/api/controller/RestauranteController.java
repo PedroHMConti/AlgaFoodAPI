@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -27,13 +28,13 @@ public class RestauranteController {
 
     @GetMapping
     public List<Restaurante> listar(){
-        return repo.listar();
+        return repo.findAll();
     }
     @GetMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> buscar(@PathVariable Long restauranteId){
-        Restaurante restaurante = repo.buscar(restauranteId);
-        if(restaurante != null){
-            return ResponseEntity.ok(restaurante);
+        Optional<Restaurante> restaurante = repo.findById(restauranteId);
+        if(restaurante.isPresent()){
+            return ResponseEntity.ok(restaurante.get());
         }else{
             return ResponseEntity.notFound().build();
         }
@@ -54,7 +55,7 @@ public class RestauranteController {
     public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
                                        @RequestBody Restaurante restaurante) {
         try {
-            Restaurante restauranteAtual = repo.buscar(restauranteId);
+            Restaurante restauranteAtual = repo.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe restaurante cadastrado com código %d",restauranteId)));
 
             if (restauranteAtual != null) {
                 BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
@@ -72,17 +73,14 @@ public class RestauranteController {
     }
 
     @DeleteMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> delete(@PathVariable Long restauranteId){
-        Restaurante restaurante = repo.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para o restaurante com o código %d",restauranteId)));
+    public ResponseEntity<?> delete(@PathVariable Long restauranteId){
        try{
+           Restaurante restaurante = repo.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para o restaurante com o código %d",restauranteId)));
            cadastroRestaurante.excluir(restauranteId);
            return ResponseEntity.noContent().build();
 
-       } catch (EntidadeEmUsoException  e) {
-           return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
        } catch (EntidadeNaoEncontradaException e) {
-           return ResponseEntity.notFound().build();
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
        }
     }
 }

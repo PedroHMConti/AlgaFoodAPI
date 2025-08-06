@@ -21,6 +21,9 @@ public class CadastroCozinha {
     public Cozinha salvar(Cozinha cozinha){
         return cozinhaRepository.save(cozinha);
     }
+
+
+
     public void remover(Long cozinhaid){
         try {
             cozinhaRepository.deleteById(cozinhaid);
