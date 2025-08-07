@@ -62,3 +62,10 @@ INSERT INTO cidade (id, nome, estado_id) VALUES (18, 'Imperatriz', 9);
 
 INSERT INTO cidade (id, nome, estado_id) VALUES (19, 'Cuiabá', 10);            -- Mato Grosso
 INSERT INTO cidade (id, nome, estado_id) VALUES (20, 'Rondonópolis', 10);
+
+insert into forma_de_pagamento (descricao) values ('Cartão de Crédito');
+insert into forma_de_pagamento (descricao) values ('Cartão de Débito');
+insert into forma_de_pagamento (descricao) values ('Dinheiro');
+insert into forma_de_pagamento (descricao) values ('Pix');
+insert into forma_de_pagamento (descricao) values ('Vale Refeição');
+

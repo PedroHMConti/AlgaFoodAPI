@@ -14,7 +14,7 @@ public class CadastroEstado {
     @Autowired
     private EstadoRepository estadoRepository;
 
-    public void delete(Long estadoId) {
+    public void excluir(Long estadoId) {
         try {
             Estado estado = estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não exite cadastro para o estado com o código %d",estadoId)));
             estadoRepository.delete(estado);

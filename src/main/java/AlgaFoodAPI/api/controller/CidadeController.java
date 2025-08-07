@@ -79,7 +79,7 @@ public class CidadeController {
     public ResponseEntity<?> delete(@PathVariable Long cidadeId){
         try{
             Cidade cidade  = repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
-            cadastroCidade.delete(cidadeId);
+            cadastroCidade.excluir(cidadeId);
             return ResponseEntity.noContent().build();
         }catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();

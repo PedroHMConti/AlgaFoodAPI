@@ -68,10 +68,10 @@ public class CozinhaController {
     }
 
     @DeleteMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId){
+    public ResponseEntity<Cozinha> delete(@PathVariable Long cozinhaId){
         Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",cozinhaId)));
         try{
-            cadastroCozinha.remover(cozinhaId);
+            cadastroCozinha.excluir(cozinhaId);
             return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         } catch (EntidadeEmUsoException e){

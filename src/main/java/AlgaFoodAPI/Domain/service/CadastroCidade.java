@@ -32,7 +32,7 @@ public class CadastroCidade {
         return cidadeRepository.save(cidade);
     }
 
-    public void delete(Long cidadeId) {
+    public void excluir(Long cidadeId) {
         try {
             Cidade cidade = cidadeRepository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe uma cidade com o código %d", cidadeId)));
             cidadeRepository.deleteById(cidadeId);

@@ -65,7 +65,7 @@ public class EstadoController {
     @DeleteMapping("/{estadoId}")
     public ResponseEntity<?> delete(@PathVariable Long estadoId){
         try{
-            cadastroEstado.delete(estadoId);
+            cadastroEstado.excluir(estadoId);
             return ResponseEntity.noContent().build();
         }catch (EntidadeEmUsoException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
