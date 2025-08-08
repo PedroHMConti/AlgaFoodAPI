@@ -59,7 +59,7 @@ public class PermissaoController {
     public ResponseEntity<?> delete(@PathVariable Long permissaoId){
         try{
             Permissao permissao  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new EntidadeNaoEncontradaException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
-            permissaoRepository.delete(permissao);
+            cadastroPermissao.excluir(permissaoId);
             return ResponseEntity.noContent().build();
         }catch(EntidadeNaoEncontradaException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
