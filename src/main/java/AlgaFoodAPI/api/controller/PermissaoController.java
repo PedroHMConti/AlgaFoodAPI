@@ -40,7 +40,7 @@ public class PermissaoController {
 
     @PostMapping
     public ResponseEntity<Permissao> adicionar(@RequestBody Permissao permissao){
-        return ResponseEntity.ok(permissaoRepository.save(permissao));
+        return ResponseEntity.ok(cadastroPermissao.salvar(permissao));
     }
 
     @PutMapping("/{permissaoId}")
