@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -19,5 +22,8 @@ public class Cozinha {
 
     @Column(name = "nome")
     private String nome;
+
+    @OneToMany
+    private List<Restaurante> restaurantes  = new ArrayList<>();
 
 }

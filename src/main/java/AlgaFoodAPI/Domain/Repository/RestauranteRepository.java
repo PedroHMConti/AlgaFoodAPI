@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface RestauranteRepository extends JpaRepository<Restaurante,Long> {
+    int countByCozinhaId(Long cozinhaId);
 
 
 }

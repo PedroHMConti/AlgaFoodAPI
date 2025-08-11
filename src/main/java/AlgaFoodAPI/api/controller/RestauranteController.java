@@ -83,6 +83,11 @@ public class RestauranteController {
            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
        }
     }
+
+    @GetMapping("/count-by-cozinha-id/{cozinhaId}")
+    public int contar(@PathVariable  Long cozinhaId){
+        return repo.countByCozinhaId(cozinhaId);
+    }
 }
 
 

@@ -1,11 +1,13 @@
 package AlgaFoodAPI.Domain.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -24,6 +26,18 @@ public class Restaurante {
     @Column(name = "taxa_frete")
     private BigDecimal taxaFrete;
 
+    @Embedded
+    private Endereco endereco;
+
     @ManyToOne
     private Cozinha cozinha;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "restaurante_forma_pagamento",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
+    )
+    private List<FormaDePagamento> formasDePagamento;
 }
