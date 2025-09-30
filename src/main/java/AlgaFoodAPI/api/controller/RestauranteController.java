@@ -1,16 +1,14 @@
 package AlgaFoodAPI.api.controller;
 
 
-import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Model.Restaurante;
 import AlgaFoodAPI.Domain.Repository.RestauranteRepository;
-import AlgaFoodAPI.Domain.service.CadastroRestauranteService;
+import AlgaFoodAPI.Domain.service.CadastroRestaurante;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.Optional;
 public class RestauranteController {
 
     @Autowired
-    private CadastroRestauranteService cadastroRestaurante;
+    private CadastroRestaurante cadastroRestaurante;
 
     @Autowired
     private RestauranteRepository repo;
