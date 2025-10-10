@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -42,6 +43,7 @@ public class Restaurante {
     private Endereco endereco;
 
     @ManyToOne
+    @JoinColumn(name = "cozinhaId",nullable = false)
     private Cozinha cozinha;
 
     @JsonIgnore
@@ -51,7 +53,7 @@ public class Restaurante {
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
     )
-    private List<FormaDePagamento> formasDePagamento;
+    private List<FormaDePagamento> formasDePagamento = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;

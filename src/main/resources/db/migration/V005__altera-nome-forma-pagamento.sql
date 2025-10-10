@@ -1,0 +1,1 @@
+rename table forma_pagamento to forma_de_pagamento;
