@@ -19,19 +19,25 @@ public class CadastroRestaurante {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    @Autowired
+    private CadastroCozinha cadastroCozinha;
+
     public Restaurante salvar(Restaurante restaurante){
         Long cozinhaid = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.findById(cozinhaid).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",cozinhaid)));
-
-        restaurante.setCozinha(cozinha);
+        Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaid);
         return restauranteRepository.save(restaurante);
     }
 
     public void excluir(Long restauranteId){
+        Restaurante restaurante = this.buscarOuFalhar(restauranteId);
         try{
             restauranteRepository.deleteById(restauranteId);
         }catch (EmptyResultDataAccessException ex) {
             throw new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",restauranteId));
         }
+    }
+
+    public Restaurante buscarOuFalhar(Long restauranteId){
+        return restauranteRepository.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para restaurante com o código %d",restauranteId)));
     }
 }
