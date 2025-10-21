@@ -3,6 +3,7 @@ package AlgaFoodAPI.api.controller;
 import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Model.Cidade;
+import AlgaFoodAPI.Domain.Model.Cozinha;
 import AlgaFoodAPI.Domain.Model.Estado;
 import AlgaFoodAPI.Domain.Repository.CidadeRepository;
 import AlgaFoodAPI.Domain.Repository.EstadoRepository;
@@ -41,51 +42,25 @@ public class CidadeController {
     }
 
     @GetMapping("/{cidadeId}")
-    public ResponseEntity<?> buscar(@PathVariable Long cidadeId){
-        Cidade cidade =  repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
-        if(cidade == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(cidade);
+    public Cidade buscar(@PathVariable Long cidadeId){
+        return cadastroCidade.buscarOuFalhar(cidadeId);
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody Cidade cidade){
-        try{
-            cadastroCidade.salvar(cidade);
-            return ResponseEntity.ok(cidade);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+    public Cidade adicionar(@RequestBody Cidade cidade){
+        return cadastroCidade.salvar(cidade);
     }
 
     @PutMapping("/{cidadeId}")
-    public ResponseEntity<?> atualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
-        try{
-            Cidade cidadeAtual = repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
-            if(cidadeAtual != null){
-                BeanUtils.copyProperties(cidade,cidadeAtual,"id");
-                cidadeAtual = repository.save(cidadeAtual);
-                return ResponseEntity.ok(cidadeAtual);
-            }
-            return ResponseEntity.notFound().build();
-        }catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public Cidade atualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
+        Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
+        BeanUtils.copyProperties(cidade,cidadeAtual,"id");
+        return repository.save(cidadeAtual);
     }
 
     @DeleteMapping("/{cidadeId}")
-    public ResponseEntity<?> delete(@PathVariable Long cidadeId){
-        try{
-            Cidade cidade  = repository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para a cidade com o código %d",cidadeId)));
-            cadastroCidade.excluir(cidadeId);
-            return ResponseEntity.noContent().build();
-        }catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
-        }catch (EntidadeEmUsoException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public void delete(@PathVariable Long cidadeId){
+        cadastroCidade.excluir(cidadeId);
     }
 
 //    @PatchMapping("/{cidadeId}")
