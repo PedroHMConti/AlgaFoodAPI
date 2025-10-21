@@ -5,7 +5,9 @@ import AlgaFoodAPI.Domain.Model.Grupo;
 import AlgaFoodAPI.Domain.Repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CadastroGrupo {
 
     @Autowired

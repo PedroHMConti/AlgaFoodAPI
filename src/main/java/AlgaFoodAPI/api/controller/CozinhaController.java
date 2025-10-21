@@ -32,53 +32,33 @@ public class CozinhaController {
     private CadastroCozinha cadastroCozinha;
 
     @GetMapping
-    public List<Cozinha> listar(){
+    public List<Cozinha> listar() {
         return cozinhaRepository.findAll();
     }
 
 
     @GetMapping("/{cozinhaId}")
-    public ResponseEntity<?> buscar(@PathVariable("cozinhaId") Long id){
-        Optional<Cozinha> cozinha = cozinhaRepository.findById(id);
-
-        if (cozinha.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(cozinha);
-
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public Cozinha buscar(@PathVariable("cozinhaId") Long id) {
+        return cadastroCozinha.buscarOuFalhar(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody Cozinha cozinha){
+    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
         return cadastroCozinha.salvar(cozinha);
     }
 
+
     @PutMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha){
-        Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(cozinhaId);
-        if(cozinhaAtual.isPresent()){
-            BeanUtils.copyProperties(cozinha,cozinhaAtual.get(),"id");
-            Cozinha cozinhasalva = cadastroCozinha.salvar(cozinhaAtual.get());
-            return ResponseEntity.ok(cozinhasalva);
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+    public Cozinha atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
+        Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
+        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+        return cadastroCozinha.salvar(cozinhaAtual);
     }
 
     @DeleteMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> delete(@PathVariable Long cozinhaId){
-        Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",cozinhaId)));
-        try{
-            cadastroCozinha.excluir(cozinhaId);
-            return  ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
-        } catch (EntidadeEmUsoException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public void delete(@PathVariable Long cozinhaId) {
+        cadastroCozinha.excluir(cozinhaId);
     }
+
 }
