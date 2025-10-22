@@ -1,6 +1,7 @@
 package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.RestauranteNaoEncontradoException;
 import AlgaFoodAPI.Domain.Model.Cozinha;
 import AlgaFoodAPI.Domain.Model.Restaurante;
 import AlgaFoodAPI.Domain.Repository.CozinhaRepository;
@@ -33,7 +34,7 @@ public class CadastroRestaurante {
         try{
             restauranteRepository.deleteById(restauranteId);
         }catch (EmptyResultDataAccessException ex) {
-            throw new EntidadeNaoEncontradaException(String.format("não existe um cadastro de cozinha com o código %d",restauranteId));
+            throw new RestauranteNaoEncontradoException(restauranteId);
         }
     }
 

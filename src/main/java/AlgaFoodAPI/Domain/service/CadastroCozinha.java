@@ -1,6 +1,7 @@
 package AlgaFoodAPI.Domain.service;
 
 
+import AlgaFoodAPI.Domain.Exception.CozinhaNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Model.Cozinha;
@@ -36,8 +37,7 @@ public class CadastroCozinha {
         try {
             cozinhaRepository.deleteById(cozinhaid);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(String.format(MSG_COZIHA_NAO_ENCONTRADA,cozinhaid));
-
+            throw new CozinhaNaoEncontradaException(cozinhaid);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_COZINHA_EM_USO, cozinhaid));
         }

@@ -1,5 +1,6 @@
 package AlgaFoodAPI.Domain.service;
 
+import AlgaFoodAPI.Domain.Exception.CidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Model.Cidade;
@@ -26,7 +27,11 @@ public class CadastroCidade {
 
     public Cidade salvar(Cidade cidade) {
         Long estadoId = cidade.getEstado().getId();
+
         Estado estado = cadastroEstado.buscarOuFalhar(estadoId);
+
+        cidade.setEstado(estado);
+
         return cidadeRepository.save(cidade);
     }
 
@@ -39,7 +44,7 @@ public class CadastroCidade {
             throw new EntidadeEmUsoException(
                     String.format("Cidade de código %d não pode ser removida, pois está em uso", cidadeId));
         }catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(String.format("Não existe cadastro para a cidade com o código %d",cidadeId));
+            throw new CidadeNaoEncontradaException(cidadeId);
         }
     }
 

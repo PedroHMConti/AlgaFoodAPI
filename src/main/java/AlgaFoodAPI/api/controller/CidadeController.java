@@ -2,6 +2,8 @@ package AlgaFoodAPI.api.controller;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.EstadoNaoEncontradoException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Cidade;
 import AlgaFoodAPI.Domain.Model.Cozinha;
 import AlgaFoodAPI.Domain.Model.Estado;
@@ -47,15 +49,27 @@ public class CidadeController {
     }
 
     @PostMapping
-    public Cidade adicionar(@RequestBody Cidade cidade){
-        return cadastroCidade.salvar(cidade);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cidade adicionar(@RequestBody Cidade cidade) {
+        try {
+            return cadastroCidade.salvar(cidade);
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{cidadeId}")
-    public Cidade atualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
-        Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
-        BeanUtils.copyProperties(cidade,cidadeAtual,"id");
-        return repository.save(cidadeAtual);
+    public Cidade atualizar(@PathVariable Long cidadeId,
+                            @RequestBody Cidade cidade) {
+        try {
+            Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
+
+            BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+
+            return cadastroCidade.salvar(cidadeAtual);
+        } catch (EstadoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @DeleteMapping("/{cidadeId}")

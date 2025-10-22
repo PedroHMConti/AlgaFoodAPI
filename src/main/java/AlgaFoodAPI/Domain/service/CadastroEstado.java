@@ -2,6 +2,7 @@ package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.EstadoNaoEncontradoException;
 import AlgaFoodAPI.Domain.Model.Estado;
 import AlgaFoodAPI.Domain.Repository.EstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,7 @@ public class CadastroEstado {
             throw new EntidadeEmUsoException(
                     String.format("O estado com o código %d não pode ser removido, pois está em uso", estadoId));
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("não existe cadastro para o estado com o código %d",estadoId)
-            );
+            throw new EstadoNaoEncontradoException(estadoId);
         }
     }
 
