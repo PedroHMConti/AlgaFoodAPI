@@ -1,6 +1,7 @@
 package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Grupo;
 import AlgaFoodAPI.Domain.Repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CadastroGrupo {
         try{
             grupoRepository.deleteById(grupoId);
         }catch(EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(String.format("não existe cadastro para grupo com código %d%n",grupoId));
+            throw new NegocioException(String.format("não existe cadastro para grupo com código %d%n",grupoId));
         }
     }
 }

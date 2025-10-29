@@ -1,14 +1,19 @@
 package AlgaFoodAPI.api.controller;
 
 
+import AlgaFoodAPI.Domain.Exception.CozinhaNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Restaurante;
 import AlgaFoodAPI.Domain.Repository.RestauranteRepository;
 import AlgaFoodAPI.Domain.service.CadastroRestaurante;
+import AlgaFoodAPI.Groups;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,16 +41,28 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public Restaurante adicionar(@RequestBody Restaurante restaurante){
-        return cadastroRestaurante.salvar(restaurante);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurante adicionar( @RequestBody @Valid Restaurante restaurante) {
+        try {
+            return cadastroRestaurante.salvar(restaurante);
+
+        } catch (CozinhaNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
+
+
     @PutMapping("/{restauranteId}")
-    public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+    public Restaurante atualizar(@PathVariable Long restauranteId,@Valid @RequestBody Restaurante restaurante) {
         Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formas_pagamento", "endereco", "dataCadastro");
-        return cadastroRestaurante.salvar(restauranteAtual);
-    }
+        try {
+            return cadastroRestaurante.salvar(restauranteAtual);
+        }catch(CozinhaNaoEncontradaException e){
+            throw new NegocioException(e.getMessage());
+        }
+        }
 
     @DeleteMapping("/{restauranteId}")
     public void delete(@PathVariable Long restauranteId){

@@ -1,6 +1,7 @@
 package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Permissao;
 import AlgaFoodAPI.Domain.Repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class CadastroPermissao {
     }
 
     public void excluir(Long permissaoId){
-        Permissao permissao = permissaoRepository.findById(permissaoId).orElseThrow(() ->new EntidadeNaoEncontradaException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
+        Permissao permissao = permissaoRepository.findById(permissaoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
         permissaoRepository.delete(permissao);
     }
 }

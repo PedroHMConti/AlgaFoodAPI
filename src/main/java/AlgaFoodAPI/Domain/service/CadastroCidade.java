@@ -10,17 +10,17 @@ import AlgaFoodAPI.Domain.Repository.EstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CadastroCidade {
 
     public static final String MSG_CIDADE_NOT_FOUND = "não existe cadastro para a cidade com o código %d";
-    @Autowired
-    private CidadeRepository cidadeRepository;
+    public static final String MSG_CIDADE_EM_USO = "Cidade com código %d não pode ser removida,pois está em uso";
 
     @Autowired
-    private EstadoRepository estadoRepository;
+    private CidadeRepository cidadeRepository;
 
     @Autowired
     private CadastroEstado cadastroEstado;
@@ -36,19 +36,19 @@ public class CadastroCidade {
     }
 
     public void excluir(Long cidadeId) {
-        Cidade cidade = this.buscarOuFalhar(cidadeId);
         try {
             cidadeRepository.deleteById(cidadeId);
 
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                    String.format("Cidade de código %d não pode ser removida, pois está em uso", cidadeId));
+                    String.format(MSG_CIDADE_EM_USO, cidadeId));
         }catch (EmptyResultDataAccessException e){
-            throw new CidadeNaoEncontradaException(cidadeId);
+            throw new CidadeNaoEncontradaException(
+                    String.format(MSG_CIDADE_NOT_FOUND,cidadeId));
         }
     }
 
     public Cidade buscarOuFalhar(Long cidadeId){
-        return cidadeRepository.findById(cidadeId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(MSG_CIDADE_NOT_FOUND,cidadeId)));
+        return cidadeRepository.findById(cidadeId).orElseThrow(() -> new CidadeNaoEncontradaException(String.format(MSG_CIDADE_NOT_FOUND,cidadeId)));
     }
 }

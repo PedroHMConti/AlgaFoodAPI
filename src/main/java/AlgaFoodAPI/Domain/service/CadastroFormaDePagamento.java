@@ -1,6 +1,7 @@
 package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.FormaDePagamento;
 import AlgaFoodAPI.Domain.Repository.FormaDePagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class CadastroFormaDePagamento {
     }
 
     public void excluir(Long formaDePagamentoId){
-        FormaDePagamento forma = repository.findById(formaDePagamentoId).orElseThrow(() ->new EntidadeNaoEncontradaException(String.format("não existe cadastro para forma de pagamento com o código %d",formaDePagamentoId)));
+        FormaDePagamento forma = repository.findById(formaDePagamentoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para forma de pagamento com o código %d",formaDePagamentoId)));
         repository.delete(forma);
     }
 }

@@ -2,6 +2,7 @@ package AlgaFoodAPI.api.controller;
 
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.FormaDePagamento;
 import AlgaFoodAPI.Domain.Repository.FormaDePagamentoRepository;
 import AlgaFoodAPI.Domain.service.CadastroFormaDePagamento;
@@ -32,7 +33,7 @@ public class FormaDePagamentoController {
     @GetMapping("/{formaDePagamentoId}")
     public ResponseEntity<?> buscar(@PathVariable Long formaDePagamentoId){
         try {
-            FormaDePagamento formaDePagamento = repository.findById(formaDePagamentoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para forma de pagamento com o código %d", formaDePagamentoId)));
+            FormaDePagamento formaDePagamento = repository.findById(formaDePagamentoId).orElseThrow(() -> new NegocioException(String.format("não existe cadastro para forma de pagamento com o código %d", formaDePagamentoId)));
             return ResponseEntity.ok(formaDePagamento);
         }catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -48,7 +49,7 @@ public class FormaDePagamentoController {
     @PutMapping("/{formaDePagamentoId}")
     public ResponseEntity<?> atualizar(@PathVariable Long formaDePagamentoId,@RequestBody FormaDePagamento formaDePagamento){
         try{
-            FormaDePagamento formaDePagamentoAtual = repository.findById(formaDePagamentoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para forma de pagamento com o código %d", formaDePagamentoId)));
+            FormaDePagamento formaDePagamentoAtual = repository.findById(formaDePagamentoId).orElseThrow(() -> new NegocioException(String.format("não existe cadastro para forma de pagamento com o código %d", formaDePagamentoId)));
             BeanUtils.copyProperties(formaDePagamento,formaDePagamentoAtual,"id");
             formaDePagamentoAtual = repository.save(formaDePagamentoAtual);
             return ResponseEntity.ok(formaDePagamentoAtual);

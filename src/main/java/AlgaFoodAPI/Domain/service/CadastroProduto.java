@@ -1,6 +1,7 @@
 package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Produto;
 import AlgaFoodAPI.Domain.Repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class CadastroProduto {
         try{
             produtoRepository.deleteById(produtoId);
         }catch(EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(String.format("não existe produto cadastrado com o código %d%n",produtoId));
+            throw new NegocioException(String.format("não existe produto cadastrado com o código %d%n",produtoId));
         }
     }
 }

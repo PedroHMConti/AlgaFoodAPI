@@ -2,6 +2,7 @@ package AlgaFoodAPI.api.controller;
 
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
+import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Permissao;
 import AlgaFoodAPI.Domain.Repository.PermissaoRepository;
 import AlgaFoodAPI.Domain.service.CadastroPermissao;
@@ -31,7 +32,7 @@ public class PermissaoController {
     @GetMapping("/{permissaoId}")
     public ResponseEntity<?> buscar(@PathVariable Long permissaoId){
         try{
-            Permissao permissao  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new EntidadeNaoEncontradaException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
+            Permissao permissao  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
             return ResponseEntity.ok(permissao);
         }catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -46,7 +47,7 @@ public class PermissaoController {
     @PutMapping("/{permissaoId}")
     public ResponseEntity<?> atualizar(@PathVariable Long permissaoId,@RequestBody Permissao permissao){
         try{
-            Permissao permissaoAtual  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new EntidadeNaoEncontradaException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
+            Permissao permissaoAtual  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
             BeanUtils.copyProperties(permissao,permissaoAtual,"id");
             permissaoAtual =permissaoRepository.save(permissaoAtual);
             return ResponseEntity.ok(permissaoAtual);
@@ -58,7 +59,7 @@ public class PermissaoController {
     @DeleteMapping("/{permissaoId}")
     public ResponseEntity<?> delete(@PathVariable Long permissaoId){
         try{
-            Permissao permissao  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new EntidadeNaoEncontradaException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
+            Permissao permissao  = permissaoRepository.findById(permissaoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
             cadastroPermissao.excluir(permissaoId);
             return ResponseEntity.noContent().build();
         }catch(EntidadeNaoEncontradaException e){

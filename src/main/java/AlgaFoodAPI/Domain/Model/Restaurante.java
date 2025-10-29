@@ -1,8 +1,15 @@
 package AlgaFoodAPI.Domain.Model;
 
 
+import AlgaFoodAPI.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,9 +31,11 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(name = "nome")
     private String nome;
 
+    @DecimalMin("0")
     @Column(name = "taxa_frete")
     private BigDecimal taxaFrete;
 
@@ -39,10 +48,13 @@ public class Restaurante {
     private LocalDateTime dataAtualizacao;
 
 
+    @JsonIgnore
     @Embedded
     private Endereco endereco;
 
+    @Valid
     @ManyToOne
+    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
     @JoinColumn(name = "cozinhaId",nullable = false)
     private Cozinha cozinha;
 
