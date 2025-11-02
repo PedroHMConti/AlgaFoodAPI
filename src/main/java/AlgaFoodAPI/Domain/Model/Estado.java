@@ -1,7 +1,7 @@
 package AlgaFoodAPI.Domain.Model;
 
 
-import AlgaFoodAPI.Groups;
+import AlgaFoodAPI.api.CoreValidation.Groups;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

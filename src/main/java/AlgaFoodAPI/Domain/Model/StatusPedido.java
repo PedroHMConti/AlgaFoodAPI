@@ -1,4 +1,9 @@
 package AlgaFoodAPI.Domain.Model;
 
-public class StatusPedido {
+public enum StatusPedido {
+
+    CRIADO,
+    CONFIRMADO,
+    ENTREGUE,
+    CANCELADO
 }

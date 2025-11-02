@@ -6,6 +6,7 @@ import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.FormaDePagamento;
 import AlgaFoodAPI.Domain.Repository.FormaDePagamentoRepository;
 import AlgaFoodAPI.Domain.service.CadastroFormaDePagamento;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class FormaDePagamentoController {
     }
 
     @PostMapping
-    public ResponseEntity<FormaDePagamento> adicionar(@RequestBody FormaDePagamento formaDePagamento){
+    public ResponseEntity<FormaDePagamento> adicionar(@Valid @RequestBody FormaDePagamento formaDePagamento){
             FormaDePagamento forma = cadastroFormaDePagamento.salvar(formaDePagamento);
             return ResponseEntity.status(HttpStatus.CREATED).body(forma);
     }

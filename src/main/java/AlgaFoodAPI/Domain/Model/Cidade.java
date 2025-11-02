@@ -1,6 +1,6 @@
 package AlgaFoodAPI.Domain.Model;
 
-import AlgaFoodAPI.Groups;
+import AlgaFoodAPI.api.CoreValidation.Groups;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +8,6 @@ import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Data
