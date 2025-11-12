@@ -52,11 +52,7 @@ public class RestauranteController {
     public Restaurante atualizar(@PathVariable Long restauranteId,@Valid @RequestBody Restaurante restaurante) {
         Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formas_pagamento", "endereco", "dataCadastro");
-        try {
-            return cadastroRestaurante.salvar(restauranteAtual);
-        }catch(CozinhaNaoEncontradaException e){
-            throw new NegocioException(e.getMessage());
-        }
+        return cadastroRestaurante.salvar(restauranteAtual);
         }
 
     @DeleteMapping("/{restauranteId}")
@@ -67,6 +63,17 @@ public class RestauranteController {
     @GetMapping("/count-by-cozinha-id/{cozinhaId}")
     public int contar(@PathVariable  Long cozinhaId){
         return repo.countByCozinhaId(cozinhaId);
+    }
+
+    @PutMapping("/{restauranteId}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable Long restauranteId){
+        cadastroRestaurante.ativar(restauranteId);
+    }
+    @DeleteMapping("/{restauranteId}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable Long restauranteId){
+        cadastroRestaurante.inativar(restauranteId);
     }
 }
 

@@ -35,6 +35,7 @@ public class CidadeController {
     }
 
     @GetMapping("/{cidadeId}")
+    @ResponseStatus(value = HttpStatus.I_AM_A_TEAPOT)
     public Cidade buscar(@PathVariable Long cidadeId) {
         return cadastroCidade.buscarOuFalhar(cidadeId);
     }
@@ -42,24 +43,14 @@ public class CidadeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cidade adicionar(@Valid @RequestBody Cidade cidade) {
-        try {
-            return cadastroCidade.salvar(cidade);
-        } catch (EstadoNaoEncontradoException e) {
-            throw new NegocioException(e.getMessage(),e);
-        }
+        return cadastroCidade.salvar(cidade);
     }
 
     @PutMapping("/{cidadeId}")
     public Cidade atualizar(@PathVariable Long cidadeId, @Valid @RequestBody Cidade cidade) {
         Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
-
         BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-
-        try {
-            return cadastroCidade.salvar(cidadeAtual);
-        } catch (EstadoNaoEncontradoException e) {
-            throw new NegocioException(e.getMessage(),e);
-        }
+        return cadastroCidade.salvar(cidadeAtual);
     }
     @DeleteMapping("/{cidadeId}")
     public void delete(@PathVariable Long cidadeId) {

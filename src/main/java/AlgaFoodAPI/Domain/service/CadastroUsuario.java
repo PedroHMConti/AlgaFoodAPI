@@ -2,11 +2,14 @@ package AlgaFoodAPI.Domain.service;
 
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.NegocioException;
+import AlgaFoodAPI.Domain.Exception.UsuarioNotFoundException;
 import AlgaFoodAPI.Domain.Model.Usuario;
 import AlgaFoodAPI.Domain.Repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CadastroUsuario {
 
     @Autowired
@@ -18,9 +21,13 @@ public class CadastroUsuario {
 
     public void excluir(Long usuarioId){
         try{
+            buscarOuFalhar(usuarioId);
             usuarioRepository.deleteById(usuarioId);
         }catch(EmptyResultDataAccessException e){
-            throw new NegocioException(String.format("não existe cadastro para o usuário com o código %d%n",usuarioId));
+            throw new UsuarioNotFoundException(usuarioId);
         }
+    }
+    public Usuario buscarOuFalhar(Long usuarioId){
+        return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNotFoundException(usuarioId));
     }
 }

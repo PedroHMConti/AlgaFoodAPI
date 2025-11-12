@@ -19,6 +19,7 @@ public class FormaDePagamento {
 
     @NotBlank
     @Column
+    @NotBlank
     private String descricao;
 
 }

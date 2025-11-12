@@ -6,6 +6,7 @@ import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.EstadoNaoEncontradoException;
 import AlgaFoodAPI.Domain.Model.Estado;
 import AlgaFoodAPI.Domain.Repository.EstadoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,6 +21,7 @@ public class CadastroEstado {
     @Autowired
     private EstadoRepository estadoRepository;
 
+    @Transactional
     public void excluir(Long estadoId) {
         try {
             estadoRepository.deleteById(estadoId);
@@ -31,6 +33,7 @@ public class CadastroEstado {
         }
     }
 
+    @Transactional
     public Estado salvar(Estado estado){
         return estadoRepository.save(estado);
     }

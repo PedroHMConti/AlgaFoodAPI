@@ -7,6 +7,7 @@ import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Model.Cozinha;
 import AlgaFoodAPI.Domain.Repository.CozinhaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -28,12 +29,14 @@ public class CadastroCozinha {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    @Transactional
     public Cozinha salvar(Cozinha cozinha){
         return cozinhaRepository.save(cozinha);
     }
 
 
 
+    @Transactional
     public void excluir(Long cozinhaid){
         buscarOuFalhar(cozinhaid);
         try {

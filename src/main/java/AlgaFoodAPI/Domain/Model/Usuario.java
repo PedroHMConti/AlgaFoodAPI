@@ -1,7 +1,9 @@
 package AlgaFoodAPI.Domain.Model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,23 +21,27 @@ public class Usuario {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @NotBlank
     @Column(nullable = false)
     private String nome;
 
+    @NotBlank
     @Column(nullable = false)
     private String email;
 
+    @NotBlank
     @Column(nullable = false)
     private String senha;
 
+    @JsonIgnore
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "usuario_grupos",
+            name = "usuario_grupo",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )

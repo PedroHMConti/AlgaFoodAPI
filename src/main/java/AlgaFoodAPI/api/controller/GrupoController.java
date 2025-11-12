@@ -6,6 +6,7 @@ import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Grupo;
 import AlgaFoodAPI.Domain.Repository.GrupoRepository;
 import AlgaFoodAPI.Domain.service.CadastroGrupo;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class GrupoController {
     private GrupoRepository grupoRepository;
 
     @Autowired
-    private CadastroGrupo grupoCadastro;
+    private CadastroGrupo cadastroGrupo;
 
     @GetMapping
     public List<Grupo> listar(){
@@ -30,40 +31,28 @@ public class GrupoController {
     }
 
     @GetMapping("{grupoId}")
-    public ResponseEntity<?> buscar(@PathVariable Long grupoId){
-        try{
-            Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new NegocioException(String.format("não existe cadastro para o grupo para o código %d",grupoId)));
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
+    public Grupo buscar(@PathVariable Long grupoId){
+        return cadastroGrupo.buscarOuFalhar(grupoId);
     }
 
-    @PostMapping()
-    public ResponseEntity<?> adicionar(@RequestBody Grupo grupo){
-        grupo = grupoRepository.save(grupo);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Grupo adicionar(@Valid @RequestBody Grupo grupo){
+        return cadastroGrupo.salvar(grupo);
     }
 
     @PutMapping("/{grupoId}")
-    public ResponseEntity<?> atualizar(@PathVariable Long grupoId,@RequestBody Grupo grupoAtualizado){
-        try{
-            Grupo grupoAntigo = grupoRepository.findById(grupoId).orElseThrow(()-> new NegocioException(String.format("não existe cadastro para o grupo com o código %d%n",grupoId)));
-            BeanUtils.copyProperties(grupoAtualizado,grupoAntigo,"id");
-            grupoAtualizado = grupoRepository.save(grupoAtualizado);
-            return ResponseEntity.ok(grupoAtualizado);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public Grupo atualizar(@PathVariable Long grupoId,@Valid @RequestBody Grupo grupo){
+        Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
+        BeanUtils.copyProperties(grupo,grupoAtual,"id");
+        return cadastroGrupo.salvar(grupoAtual);
     }
 
-//    @DeleteMapping("{grupoId}")
-//    public ResponseEntity<?> deletar(@PathVariable Long grupoId){
-//        try{
-//            Grupo grupo = grupoRepository.findById(grupoId).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("não existe cadastro para o grupo para o código %d",grupoId)));
-//        }
-//    }
+    @DeleteMapping("{grupoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long grupoId){
+        cadastroGrupo.excluir(grupoId);
+    }
 
 
 }

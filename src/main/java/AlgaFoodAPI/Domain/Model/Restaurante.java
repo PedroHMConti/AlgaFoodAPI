@@ -3,6 +3,7 @@ package AlgaFoodAPI.Domain.Model;
 
 import AlgaFoodAPI.api.CoreValidation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -40,16 +41,18 @@ public class Restaurante {
 
 
     @CreationTimestamp
+    @JsonIgnore
     @Column(nullable = false,columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
     @UpdateTimestamp
+    @JsonIgnore
     @Column(nullable = false,columnDefinition = "datetime")
     private LocalDateTime dataAtualizacao;
 
 
-    @JsonIgnore
     @Embedded
+    @Valid
     private Endereco endereco;
 
     @Valid
@@ -58,15 +61,18 @@ public class Restaurante {
     @JoinColumn(name = "cozinhaId",nullable = false)
     private Cozinha cozinha;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "restaurante_forma_pagamento",
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
     )
+    @JsonIgnore
     private List<FormaDePagamento> formasDePagamento = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;
+
+    private Boolean ativo = Boolean.TRUE;
 }

@@ -32,40 +32,28 @@ public class FormaDePagamentoController {
     }
 
     @GetMapping("/{formaDePagamentoId}")
-    public ResponseEntity<?> buscar(@PathVariable Long formaDePagamentoId){
-        try {
-            FormaDePagamento formaDePagamento = repository.findById(formaDePagamentoId).orElseThrow(() -> new NegocioException(String.format("não existe cadastro para forma de pagamento com o código %d", formaDePagamentoId)));
-            return ResponseEntity.ok(formaDePagamento);
-        }catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public FormaDePagamento buscar(@PathVariable Long formaDePagamentoId){
+        return cadastroFormaDePagamento.buscarOuFalhar(formaDePagamentoId);
     }
 
     @PostMapping
-    public ResponseEntity<FormaDePagamento> adicionar(@Valid @RequestBody FormaDePagamento formaDePagamento){
-            FormaDePagamento forma = cadastroFormaDePagamento.salvar(formaDePagamento);
-            return ResponseEntity.status(HttpStatus.CREATED).body(forma);
+    @ResponseStatus(HttpStatus.CREATED)
+    public FormaDePagamento adicionar(@Valid @RequestBody FormaDePagamento formaDePagamento){
+            return cadastroFormaDePagamento.salvar(formaDePagamento);
     }
 
     @PutMapping("/{formaDePagamentoId}")
-    public ResponseEntity<?> atualizar(@PathVariable Long formaDePagamentoId,@RequestBody FormaDePagamento formaDePagamento){
-        try{
-            FormaDePagamento formaDePagamentoAtual = repository.findById(formaDePagamentoId).orElseThrow(() -> new NegocioException(String.format("não existe cadastro para forma de pagamento com o código %d", formaDePagamentoId)));
-            BeanUtils.copyProperties(formaDePagamento,formaDePagamentoAtual,"id");
-            formaDePagamentoAtual = repository.save(formaDePagamentoAtual);
-            return ResponseEntity.ok(formaDePagamentoAtual);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public FormaDePagamento atualizar(@PathVariable Long formaDePagamentoId,@Valid @RequestBody FormaDePagamento formaDePagamento){
+        FormaDePagamento formaDePagamentoAtual = cadastroFormaDePagamento.buscarOuFalhar(formaDePagamentoId);
+        BeanUtils.copyProperties(formaDePagamento,formaDePagamentoAtual,"id");
+        return cadastroFormaDePagamento.salvar(formaDePagamentoAtual);
     }
 
     @DeleteMapping("/{formaDePagamentoId}")
-    public ResponseEntity<?> delete(@PathVariable Long formaDePagamentoId){
-        try{
-            cadastroFormaDePagamento.excluir(formaDePagamentoId);
-            return ResponseEntity.noContent().build();
-        }catch (EntidadeNaoEncontradaException e ){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long formaDePagamentoId){
+        cadastroFormaDePagamento.excluir(formaDePagamentoId);
     }
 }
