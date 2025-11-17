@@ -1,5 +1,6 @@
 package AlgaFoodAPI.Domain.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +29,7 @@ public class Produto {
     @Column(nullable = false)
     private Boolean ativo;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(nullable = false)
     private Restaurante restaurante;
