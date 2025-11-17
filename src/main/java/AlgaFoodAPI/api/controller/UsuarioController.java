@@ -41,11 +41,18 @@ public class UsuarioController {
     public Usuario atualizar(@PathVariable Long usuarioId, @RequestBody @Valid Usuario usuario){
         Usuario usuarioAtual = cadastroUsuario.buscarOuFalhar(usuarioId);
         BeanUtils.copyProperties(usuario,usuarioAtual,"id");
-        return cadastroUsuario.salvar(usuarioAtual);
+        usuarioAtual = cadastroUsuario.salvar(usuarioAtual);
+        return usuarioAtual;
     }
 
     @DeleteMapping("/{usuarioId}")
     public void excluir(@PathVariable Long usuarioId){
         cadastroUsuario.excluir(usuarioId);
+    }
+
+    @PutMapping("/{usuarioId}/senha")
+    @ResponseStatus(HttpStatus.OK)
+    public void alterarSenha(@PathVariable Long usuarioId,@RequestParam String senhaAtual, @RequestParam String senhaNova){
+        cadastroUsuario.alterarSenha(usuarioId,senhaAtual,senhaNova);
     }
 }

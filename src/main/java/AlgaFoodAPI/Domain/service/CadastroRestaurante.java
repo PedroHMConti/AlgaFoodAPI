@@ -5,6 +5,8 @@ import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 //import AlgaFoodAPI.Domain.Exception.RestauranteNaoEncontradoException;
 import AlgaFoodAPI.Domain.Exception.RestauranteNaoEncontradoException;
 import AlgaFoodAPI.Domain.Model.Cozinha;
+import AlgaFoodAPI.Domain.Model.FormaDePagamento;
+import AlgaFoodAPI.Domain.Model.Produto;
 import AlgaFoodAPI.Domain.Model.Restaurante;
 import AlgaFoodAPI.Domain.Repository.CozinhaRepository;
 import AlgaFoodAPI.Domain.Repository.RestauranteRepository;
@@ -28,6 +30,12 @@ public class CadastroRestaurante {
 
     @Autowired
     private CadastroCozinha cadastroCozinha;
+
+    @Autowired
+    private CadastroFormaDePagamento cadastroFormaDePagamento;
+
+    @Autowired
+    private CadastroProduto cadastroProduto;
 
     public Restaurante salvar(Restaurante restaurante){
         Long cozinhaid = restaurante.getCozinha().getId();
@@ -61,4 +69,21 @@ public class CadastroRestaurante {
 
         restauranteAtual.setAtivo(false);
     }
+
+    @Transactional
+    public void desassociarFormaDePagamento(Long restauranteId,Long formaDePagamentoId){
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        FormaDePagamento formaDePagamento = cadastroFormaDePagamento.buscarOuFalhar(formaDePagamentoId);
+
+        restaurante.getFormasDePagamento().remove(formaDePagamento);
+    }
+    @Transactional
+    public void associarFormaDePagamento(Long restauranteId,Long formaDePagamentoId){
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        FormaDePagamento formaDePagamento = cadastroFormaDePagamento.buscarOuFalhar(formaDePagamentoId);
+        if(!restaurante.getFormasDePagamento().contains(formaDePagamento)){
+            restaurante.getFormasDePagamento().add(formaDePagamento);
+        }
+    }
+
 }
