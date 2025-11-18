@@ -73,5 +73,6 @@ public class Restaurante {
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;
 
+    @NotBlank
     private Boolean ativo = Boolean.TRUE;
 }
