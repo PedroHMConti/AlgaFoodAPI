@@ -38,7 +38,7 @@ public class Usuario {
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
-    @JsonIgnore
+
     @ManyToMany
     @JoinTable(
             name = "usuario_grupo",
