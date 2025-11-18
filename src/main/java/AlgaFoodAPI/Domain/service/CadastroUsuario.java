@@ -3,6 +3,7 @@ package AlgaFoodAPI.Domain.service;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Exception.UsuarioNotFoundException;
+import AlgaFoodAPI.Domain.Model.Grupo;
 import AlgaFoodAPI.Domain.Model.Usuario;
 import AlgaFoodAPI.Domain.Repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
@@ -22,6 +23,9 @@ public class CadastroUsuario {
     @Autowired
     EntityManager manager;
 
+    @Autowired
+    private CadastroGrupo cadastroGrupo;
+
     @Transactional
     public Usuario salvar(Usuario usuario){
         manager.detach(usuario);
@@ -33,6 +37,22 @@ public class CadastroUsuario {
         }
 
         return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void associarGrupo(Long usuarioId,Long grupoId){
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
+        usuario.getGrupos().add(grupo);
+    }
+
+    @Transactional
+    public void desassociarGrupo(Long usuarioId,Long grupoId){
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
+        if(usuario.getGrupos().contains(grupo)) {
+            usuario.getGrupos().remove(grupo);
+        }
     }
 
 
