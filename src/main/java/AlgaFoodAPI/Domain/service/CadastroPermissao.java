@@ -18,7 +18,11 @@ public class CadastroPermissao {
     }
 
     public void excluir(Long permissaoId){
-        Permissao permissao = permissaoRepository.findById(permissaoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
+        Permissao permissao = buscarOuFalhar(permissaoId);
         permissaoRepository.delete(permissao);
+    }
+
+    public Permissao buscarOuFalhar(Long permissaoId){
+        return permissaoRepository.findById(permissaoId).orElseThrow(() ->new NegocioException(String.format("não existe cadastro para a permissão com o código %d",permissaoId)));
     }
 }

@@ -5,7 +5,9 @@ import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 import AlgaFoodAPI.Domain.Exception.GrupoNotFoundException;
 import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Grupo;
+import AlgaFoodAPI.Domain.Model.Permissao;
 import AlgaFoodAPI.Domain.Repository.GrupoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,6 +18,9 @@ public class CadastroGrupo {
 
     @Autowired
     private GrupoRepository grupoRepository;
+
+    @Autowired
+    private CadastroPermissao cadastroPermissao;
 
     public Grupo salvar(Grupo grupo){
         return grupoRepository.save(grupo);
@@ -33,5 +38,21 @@ public class CadastroGrupo {
     }
     public Grupo buscarOuFalhar(Long grupoId){
         return grupoRepository.findById(grupoId).orElseThrow(() -> new GrupoNotFoundException(grupoId));
+    }
+
+    @Transactional
+    public void associarPermissao(Long grupoId,Long permissaoId){
+        Grupo grupo = buscarOuFalhar(grupoId);
+        Permissao permissao = cadastroPermissao.buscarOuFalhar(permissaoId);
+        grupo.getPermissoes().add(permissao);
+    }
+
+    @Transactional
+    public void desassociarPermissao(Long grupoId,Long permissaoId){
+        Grupo grupo = buscarOuFalhar(grupoId);
+        Permissao permissao = cadastroPermissao.buscarOuFalhar(permissaoId);
+        if(grupo.getPermissoes().contains(permissao)){
+            grupo.getPermissoes().remove(permissao);
+        }
     }
 }
