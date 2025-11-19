@@ -4,10 +4,7 @@ import AlgaFoodAPI.Domain.Exception.EntidadeEmUsoException;
 import AlgaFoodAPI.Domain.Exception.EntidadeNaoEncontradaException;
 //import AlgaFoodAPI.Domain.Exception.RestauranteNaoEncontradoException;
 import AlgaFoodAPI.Domain.Exception.RestauranteNaoEncontradoException;
-import AlgaFoodAPI.Domain.Model.Cozinha;
-import AlgaFoodAPI.Domain.Model.FormaDePagamento;
-import AlgaFoodAPI.Domain.Model.Produto;
-import AlgaFoodAPI.Domain.Model.Restaurante;
+import AlgaFoodAPI.Domain.Model.*;
 import AlgaFoodAPI.Domain.Repository.CozinhaRepository;
 import AlgaFoodAPI.Domain.Repository.RestauranteRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +33,9 @@ public class CadastroRestaurante {
 
     @Autowired
     private CadastroProduto cadastroProduto;
+
+    @Autowired
+    private CadastroUsuario cadastroUsuario;
 
     public Restaurante salvar(Restaurante restaurante){
         Long cozinhaid = restaurante.getCozinha().getId();
@@ -83,6 +83,22 @@ public class CadastroRestaurante {
         FormaDePagamento formaDePagamento = cadastroFormaDePagamento.buscarOuFalhar(formaDePagamentoId);
         if(!restaurante.getFormasDePagamento().contains(formaDePagamento)){
             restaurante.getFormasDePagamento().add(formaDePagamento);
+        }
+    }
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId,Long usuarioId){
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        Usuario responsavel = cadastroUsuario.buscarOuFalhar(usuarioId);
+        restaurante.getUsuarios().add(responsavel);
+    }
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId,Long usuarioId){
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        Usuario responsavel = cadastroUsuario.buscarOuFalhar(usuarioId);
+        if(restaurante.getUsuarios().contains(responsavel)){
+            restaurante.getUsuarios().remove(responsavel);
         }
     }
 
