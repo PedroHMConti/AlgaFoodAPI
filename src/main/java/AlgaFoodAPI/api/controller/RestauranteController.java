@@ -47,6 +47,15 @@ public class RestauranteController {
     }
 
 
+    @PutMapping("ativacoes")
+    public void ativacaoMultipla(@RequestBody List<Long> restaurantesIds){
+        cadastroRestaurante.ativar(restaurantesIds);
+    }
+
+    @DeleteMapping("ativacoes")
+    public void destivacaoMultipla(@RequestBody List<Long> restaurantesIds){
+        cadastroRestaurante.inativar(restaurantesIds);
+    }
 
     @PutMapping("/{restauranteId}")
     public Restaurante atualizar(@PathVariable Long restauranteId,@Valid @RequestBody Restaurante restaurante) {

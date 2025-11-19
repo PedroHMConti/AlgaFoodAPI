@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 
 @Service
 public class CadastroRestaurante {
@@ -100,6 +102,16 @@ public class CadastroRestaurante {
         if(restaurante.getUsuarios().contains(responsavel)){
             restaurante.getUsuarios().remove(responsavel);
         }
+    }
+
+    @Transactional
+    public void ativar(List<Long> restaurantesIds){
+        restaurantesIds.forEach(this::ativar);
+    }
+
+    @Transactional
+    public void inativar(List<Long> restaurantesIds){
+        restaurantesIds.forEach(this::inativar);
     }
 
 }
