@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import lombok.Data;
@@ -73,6 +74,14 @@ public class Restaurante {
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;
 
-    @NotBlank
+    @NotNull
     private Boolean ativo = Boolean.TRUE;
+
+    @ManyToMany
+    @JoinTable(
+            name = "restaurante_usuario",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<Usuario> usuarios;
 }

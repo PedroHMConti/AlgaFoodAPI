@@ -46,4 +46,13 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "grupo_id")
     )
     private List<Grupo> grupos;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "restaurante_usuario",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "restaurante_id")
+    )
+    private List<Restaurante> restaurantes;
 }
