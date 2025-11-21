@@ -5,6 +5,7 @@ import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Permissao;
 import AlgaFoodAPI.Domain.Repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,9 +18,13 @@ public class CadastroPermissao {
         return permissaoRepository.save(permissao);
     }
 
-    public void excluir(Long permissaoId){
-        Permissao permissao = buscarOuFalhar(permissaoId);
-        permissaoRepository.delete(permissao);
+    public void excluir(Long permissaoId) {
+        try {
+            Permissao permissao = buscarOuFalhar(permissaoId);
+            permissaoRepository.delete(permissao);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NegocioException(String.format("não existe permissão cadastrada com o código %d%n", permissaoId));
+        }
     }
 
     public Permissao buscarOuFalhar(Long permissaoId){
