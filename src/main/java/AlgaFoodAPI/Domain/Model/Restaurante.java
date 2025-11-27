@@ -1,9 +1,8 @@
 package AlgaFoodAPI.Domain.Model;
 
 
-import AlgaFoodAPI.api.CoreValidation.Groups;
+import AlgaFoodAPI.api.Core.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -68,13 +67,12 @@ public class Restaurante {
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
     )
-
     private List<FormaDePagamento> formasDePagamento = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;
 
-    @NotNull
+
     private Boolean ativo = Boolean.TRUE;
 
     @ManyToMany

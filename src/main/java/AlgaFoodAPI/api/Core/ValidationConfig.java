@@ -1,4 +1,4 @@
-package AlgaFoodAPI.api.CoreValidation;
+package AlgaFoodAPI.api.Core;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
