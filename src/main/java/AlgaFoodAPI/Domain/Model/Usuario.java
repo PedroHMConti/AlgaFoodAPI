@@ -21,19 +21,19 @@ public class Usuario {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
+
     @Column(nullable = false)
     private String nome;
 
-    @NotBlank
+
     @Column(nullable = false)
     private String email;
 
-    @NotBlank
+
     @Column(nullable = false)
     private String senha;
 
-    @JsonIgnore
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
@@ -47,7 +47,7 @@ public class Usuario {
     )
     private List<Grupo> grupos;
 
-    @JsonIgnore
+
     @ManyToMany
     @JoinTable(
             name = "restaurante_usuario",

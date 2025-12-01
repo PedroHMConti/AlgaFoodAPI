@@ -31,33 +31,28 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+
     @Column(name = "nome")
     private String nome;
 
-    @DecimalMin("0.01")
+
     @Column(name = "taxa_frete")
     private BigDecimal taxaFrete;
 
 
     @CreationTimestamp
-    @JsonIgnore
     @Column(nullable = false,columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
     @UpdateTimestamp
-    @JsonIgnore
     @Column(nullable = false,columnDefinition = "datetime")
     private LocalDateTime dataAtualizacao;
 
 
     @Embedded
-    @Valid
     private Endereco endereco;
 
-    @Valid
     @ManyToOne
-    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
     @JoinColumn(name = "cozinhaId",nullable = false)
     private Cozinha cozinha;
 

@@ -6,6 +6,10 @@ import AlgaFoodAPI.Domain.Exception.NegocioException;
 import AlgaFoodAPI.Domain.Model.Grupo;
 import AlgaFoodAPI.Domain.Repository.GrupoRepository;
 import AlgaFoodAPI.Domain.service.CadastroGrupo;
+import AlgaFoodAPI.api.assembler.GrupoInputDisassembler;
+import AlgaFoodAPI.api.assembler.GrupoModelAssembler;
+import AlgaFoodAPI.api.model.GrupoModel;
+import AlgaFoodAPI.api.model.input.GrupoInput;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,27 +29,35 @@ public class GrupoController {
     @Autowired
     private CadastroGrupo cadastroGrupo;
 
+    @Autowired
+    private GrupoModelAssembler grupoModelAssembler;
+
+    @Autowired
+    private GrupoInputDisassembler grupoInputDisassembler;
+
     @GetMapping
-    public List<Grupo> listar(){
-        return grupoRepository.findAll();
+    public List<GrupoModel> listar(){
+        return grupoModelAssembler.toCollectionModel( grupoRepository.findAll());
     }
 
     @GetMapping("{grupoId}")
-    public Grupo buscar(@PathVariable Long grupoId){
-        return cadastroGrupo.buscarOuFalhar(grupoId);
+    public GrupoModel buscar(@PathVariable Long grupoId){
+        return grupoModelAssembler.toModel(cadastroGrupo.buscarOuFalhar(grupoId));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Grupo adicionar(@Valid @RequestBody Grupo grupo){
-        return cadastroGrupo.salvar(grupo);
+    public GrupoModel adicionar(@Valid @RequestBody GrupoInput grupoInput){
+        Grupo grupo = grupoInputDisassembler.toDomainObject(grupoInput);
+        return grupoModelAssembler.toModel(cadastroGrupo.salvar(grupo));
     }
 
     @PutMapping("/{grupoId}")
-    public Grupo atualizar(@PathVariable Long grupoId,@Valid @RequestBody Grupo grupo){
+    public GrupoModel atualizar(@PathVariable Long grupoId,@Valid @RequestBody GrupoInput grupoInput){
         Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
+        Grupo grupo = grupoInputDisassembler.toDomainObject(grupoInput);
         BeanUtils.copyProperties(grupo,grupoAtual,"id");
-        return cadastroGrupo.salvar(grupoAtual);
+        return grupoModelAssembler.toModel(cadastroGrupo.salvar(grupo));
     }
 
     @DeleteMapping("{grupoId}")
