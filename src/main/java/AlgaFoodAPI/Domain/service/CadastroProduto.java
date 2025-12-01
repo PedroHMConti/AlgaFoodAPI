@@ -22,6 +22,7 @@ public class CadastroProduto {
     public void excluir(Long produtoId){
         try{
             produtoRepository.deleteById(produtoId);
+            produtoRepository.flush();
         }catch(EmptyResultDataAccessException e){
             throw new NegocioException(String.format("não existe produto cadastrado com o código %d%n",produtoId));
         }

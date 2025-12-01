@@ -27,6 +27,7 @@ public class CadastroFormaDePagamento {
         try{
             buscarOuFalhar(formaDePagamentoId);
             formaDePagamentoRepository.deleteById(formaDePagamentoId);
+            formaDePagamentoRepository.flush();
         }catch (DataIntegrityViolationException e ){
             throw new EntidadeEmUsoException(String.format("não é possivel excluir o metodo de pagamento %d,pois está em uso",formaDePagamentoId));
         }catch (EmptyResultDataAccessException e){

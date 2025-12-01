@@ -30,6 +30,7 @@ public class CadastroGrupo {
         try{
             buscarOuFalhar(grupoId);
             grupoRepository.deleteById(grupoId);
+            grupoRepository.flush();
         }catch(EmptyResultDataAccessException e){
             throw new GrupoNotFoundException(String.format("não existe cadastro para grupo com código %d%n",grupoId));
         }catch (DataIntegrityViolationException e ){
