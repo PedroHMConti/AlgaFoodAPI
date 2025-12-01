@@ -20,24 +20,22 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @NotBlank
     @Column(nullable = false)
     private String descricao;
 
-    @NotNull
+
     @Column(nullable = false)
     private BigDecimal preco;
 
-    @NotNull
+
     @Column(nullable = false)
     private Boolean ativo;
 
-    @Valid
-    @JsonIgnore
+
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Restaurante restaurante;

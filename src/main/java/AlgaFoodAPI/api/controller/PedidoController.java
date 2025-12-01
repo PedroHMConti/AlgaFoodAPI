@@ -4,6 +4,11 @@ import AlgaFoodAPI.Domain.Model.Pedido;
 import AlgaFoodAPI.Domain.Repository.PedidoRepository;
 import AlgaFoodAPI.Domain.Repository.ProdutoRepository;
 import AlgaFoodAPI.Domain.service.CadastroPedido;
+import AlgaFoodAPI.Domain.service.EmissaoPedidoService;
+import AlgaFoodAPI.api.assembler.PedidoModelAssembler;
+import AlgaFoodAPI.api.assembler.PedidoResumoModelAssembler;
+import AlgaFoodAPI.api.model.PedidoModel;
+import AlgaFoodAPI.api.model.PedidoResumoModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,41 +17,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping(value = "/pedidos")
 public class PedidoController {
 
     @Autowired
-    CadastroPedido cadastroPedido;
+    private PedidoRepository pedidoRepository;
 
     @Autowired
-    PedidoRepository pedidoRepository;
+    private EmissaoPedidoService emissaoPedido;
+
+    @Autowired
+    private PedidoModelAssembler pedidoModelAssembler;
+
+    @Autowired
+    private PedidoResumoModelAssembler pedidoResumoModelAssembler;
 
     @GetMapping
-    public List<Pedido> pedidos(){
-        return pedidoRepository.findAll();
+    public List<PedidoResumoModel> listar() {
+        List<Pedido> todosPedidos = pedidoRepository.findAll();
+
+        return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
     }
 
-    @GetMapping("{pedidoId}")
-    public Pedido buscar(@PathVariable Long pedidoId){
-        return cadastroPedido.buscarOuFalhar(pedidoId);
-    }
+    @GetMapping("/{pedidoId}")
+    public PedidoModel buscar(@PathVariable Long pedidoId) {
+        Pedido pedido = emissaoPedido.buscarOuFalhar(pedidoId);
 
-    @PostMapping
-    public Pedido adicionar(@RequestBody @Valid Pedido pedido){
-        return cadastroPedido.salvar(pedido);
+        return pedidoModelAssembler.toModel(pedido);
     }
-
-    @PutMapping("{pedidoId}")
-    public Pedido atualizar(@PathVariable Long pedidoId, @RequestBody @Valid Pedido pedido){
-        Pedido pedidoAtual = cadastroPedido.buscarOuFalhar(pedidoId);
-        BeanUtils.copyProperties(pedido,pedidoAtual,"id");
-        return cadastroPedido.salvar(pedidoAtual);
-    }
-
-    @DeleteMapping("{pedidoId}")
-    public void excluir(@PathVariable Long pedidoId){
-        cadastroPedido.excluir(pedidoId);
-    }
-
 
 }
