@@ -17,9 +17,8 @@ public class FormaDePagamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+
     @Column
-    @NotBlank
     private String descricao;
 
 }
