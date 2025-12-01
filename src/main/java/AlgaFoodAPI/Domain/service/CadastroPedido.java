@@ -27,6 +27,7 @@ public class CadastroPedido {
         try{
             buscarOuFalhar(pedidoId);
             pedidoRepository.deleteById(pedidoId);
+            pedidoRepository.flush();
         }catch (DataIntegrityViolationException e){
             throw new EntidadeEmUsoException(String.format("não é possível excluir o pedido com o código %d, pois está em uso",pedidoId));
         }

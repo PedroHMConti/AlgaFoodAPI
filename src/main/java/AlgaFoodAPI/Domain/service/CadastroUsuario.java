@@ -60,6 +60,7 @@ public class CadastroUsuario {
         try{
             buscarOuFalhar(usuarioId);
             usuarioRepository.deleteById(usuarioId);
+            usuarioRepository.flush();
         }catch(EmptyResultDataAccessException e){
             throw new UsuarioNotFoundException(usuarioId);
         }

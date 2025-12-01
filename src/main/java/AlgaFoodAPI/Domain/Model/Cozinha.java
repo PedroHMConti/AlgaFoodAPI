@@ -20,18 +20,18 @@ import java.util.List;
 public class Cozinha {
 
 
-    @NotNull(groups = Groups.CozinhaId.class)
+
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+
     @Column(name = "nome")
     private String nome;
 
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "cozinha")
     private List<Restaurante> restaurantes  = new ArrayList<>();
 

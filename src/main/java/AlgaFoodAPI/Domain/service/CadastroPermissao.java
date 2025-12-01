@@ -22,6 +22,7 @@ public class CadastroPermissao {
         try {
             Permissao permissao = buscarOuFalhar(permissaoId);
             permissaoRepository.delete(permissao);
+            permissaoRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new NegocioException(String.format("não existe permissão cadastrada com o código %d%n", permissaoId));
         }

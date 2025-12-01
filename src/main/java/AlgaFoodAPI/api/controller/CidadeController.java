@@ -7,6 +7,12 @@ import AlgaFoodAPI.Domain.Model.Cidade;
 import AlgaFoodAPI.Domain.Repository.CidadeRepository;
 import AlgaFoodAPI.Domain.Repository.EstadoRepository;
 import AlgaFoodAPI.Domain.service.CadastroCidade;
+import AlgaFoodAPI.api.assembler.CidadeInputDesassembler;
+import AlgaFoodAPI.api.assembler.CidadeModelAssembler;
+import AlgaFoodAPI.api.assembler.CozinhaInputDesassembler;
+import AlgaFoodAPI.api.assembler.CozinhaModelAssembler;
+import AlgaFoodAPI.api.model.CidadeModel;
+import AlgaFoodAPI.api.model.input.CidadeInput;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,28 +35,36 @@ public class CidadeController {
     @Autowired
     private EstadoRepository estadoRepository;
 
+    @Autowired
+    private CidadeInputDesassembler cidadeInputDesassembler;
+
+    @Autowired
+    private CidadeModelAssembler cidadeModelAssembler;
+
     @GetMapping
-    public List<Cidade> listar() {
-        return repository.findAll();
+    public List<CidadeModel> listar() {
+        return cidadeModelAssembler.toCollectionModel(repository.findAll());
     }
 
     @GetMapping("/{cidadeId}")
     @ResponseStatus(value = HttpStatus.I_AM_A_TEAPOT)
-    public Cidade buscar(@PathVariable Long cidadeId) {
-        return cadastroCidade.buscarOuFalhar(cidadeId);
+    public CidadeModel buscar(@PathVariable Long cidadeId) {
+        return cidadeModelAssembler.toModel(cadastroCidade.buscarOuFalhar(cidadeId));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adicionar(@Valid @RequestBody Cidade cidade) {
-        return cadastroCidade.salvar(cidade);
+    public CidadeModel adicionar(@Valid @RequestBody CidadeInput cidadeInput) {
+        Cidade cidade = cidadeInputDesassembler.toDomainObject(cidadeInput);
+        return cidadeModelAssembler.toModel(cadastroCidade.salvar(cidade));
     }
 
     @PutMapping("/{cidadeId}")
-    public Cidade atualizar(@PathVariable Long cidadeId, @Valid @RequestBody Cidade cidade) {
+    public CidadeModel atualizar(@PathVariable Long cidadeId, @Valid @RequestBody CidadeInput cidadeInput) {
+        Cidade cidade = cidadeInputDesassembler.toDomainObject(cidadeInput);
         Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
         BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-        return cadastroCidade.salvar(cidadeAtual);
+        return cidadeModelAssembler.toModel(cadastroCidade.salvar(cidadeAtual));
     }
     @DeleteMapping("/{cidadeId}")
     public void delete(@PathVariable Long cidadeId) {
