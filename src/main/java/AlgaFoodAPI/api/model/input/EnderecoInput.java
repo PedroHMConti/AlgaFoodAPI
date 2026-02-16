@@ -25,6 +25,5 @@ public class EnderecoInput {
 
     @Valid
     @NotNull
-    private CidadeInput cidade;
-
+    private CidadeIdInput cidade;
 }

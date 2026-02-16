@@ -19,17 +19,17 @@ public class CadastroPedido {
         return pedidoRepository.save(pedido);
     }
 
-    public Pedido buscarOuFalhar(Long pedidoId){
-        return pedidoRepository.findById(pedidoId).orElseThrow(()->new PedidoNaoEncontradoException(pedidoId));
+    public Pedido buscarOuFalhar(String codigo){
+        return pedidoRepository.findByCodigo(codigo).orElseThrow(()->new PedidoNaoEncontradoException(codigo));
     }
 
-    public void excluir(Long pedidoId){
+    public void excluir(String codigo){
         try{
-            buscarOuFalhar(pedidoId);
-            pedidoRepository.deleteById(pedidoId);
+            buscarOuFalhar(codigo);
+            pedidoRepository.deleteByCodigo(codigo);
             pedidoRepository.flush();
         }catch (DataIntegrityViolationException e){
-            throw new EntidadeEmUsoException(String.format("não é possível excluir o pedido com o código %d, pois está em uso",pedidoId));
+            throw new EntidadeEmUsoException(String.format("não é possível excluir o pedido com o código %s, pois está em uso",codigo));
         }
     }
 }

@@ -77,4 +77,12 @@ public class Restaurante {
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private List<Usuario> usuarios;
+
+    public boolean aceitaFormaPagamento(FormaDePagamento formaPagamento) {
+        return getFormasDePagamento().contains(formaPagamento);
+    }
+
+    public boolean naoAceitaFormaPagamento(FormaDePagamento formaPagamento) {
+        return !aceitaFormaPagamento(formaPagamento);
+    }
 }
