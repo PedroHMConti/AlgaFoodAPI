@@ -12,6 +12,8 @@ import AlgaFoodAPI.api.assembler.RestauranteModelAssembler;
 import AlgaFoodAPI.api.model.CozinhaModel;
 import AlgaFoodAPI.api.model.RestauranteModel;
 import AlgaFoodAPI.api.model.input.RestauranteInput;
+import AlgaFoodAPI.api.model.view.RestauranteView;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class RestauranteController {
     @Autowired
     private RestauranteInputDesassembler restauranteInputDesassembler;
 
+    @JsonView(RestauranteView.resumo.class)
     @GetMapping
     public List<RestauranteModel> listar() {
         return restauranteModelAssembler.toCollectionModel(repo.findAll());
